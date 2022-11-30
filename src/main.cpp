@@ -8,12 +8,15 @@
 #include "output.hpp"
 
 
+const int RELAY_PIN = 6;
+
+
 Queues queues;
 EventLogger event_logger;
 Ir ir;
 Ble ble;
 Led led;
-Output output;
+Output output(RELAY_PIN);
 
 
 void setup() {

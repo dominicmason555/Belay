@@ -9,13 +9,56 @@ void EventLogger::tick(Queues& queues)
         Serial.print("Key Event: ");
         switch (queues.ir_q.events[ir_tail])
         {
+        case ir_ev_t::ONE:
+            Serial.println("One");
+            break;
+        case ir_ev_t::TWO:
+            Serial.println("Two");
+            break;
+        case ir_ev_t::THREE:
+            Serial.println("Three");
+            break;
+        case ir_ev_t::FOUR:
+            Serial.println("Four");
+            break;
+        case ir_ev_t::FIVE:
+            Serial.println("Five");
+            break;
+        case ir_ev_t::SIX:
+            Serial.println("Six");
+            break;
+        case ir_ev_t::SEVEN:
+            Serial.println("Seven");
+            break;
+        case ir_ev_t::EIGHT:
+            Serial.println("Eight");
+            break;
+        case ir_ev_t::NINE:
+            Serial.println("Nine");
+            break;
         case ir_ev_t::STAR:
             Serial.println("Star");
+            break;
+        case ir_ev_t::ZERO:
+            Serial.println("Zero");
             break;
         case ir_ev_t::CRUNCH:
             Serial.println("Crunch");
             break;
-        default:
+        case ir_ev_t::UP:
+            Serial.println("Up");
+            break;
+        case ir_ev_t::LEFT:
+            Serial.println("Left");
+            break;
+        case ir_ev_t::OK:
+            Serial.println("Ok");
+            break;
+        case ir_ev_t::RIGHT:
+            Serial.println("Right");
+            break;
+        case ir_ev_t::DOWN:
+            Serial.println("Down");
             break;
         }
         ir_tail = (ir_tail + 1) % IR_Q_LEN;

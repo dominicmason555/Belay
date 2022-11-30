@@ -20,5 +20,5 @@ public:
 
     void init();
 
-    Ir(): receiver(8, 512, 15, true) {};
+    Ir(): receiver(8, 100, 15, true) {};
 };
