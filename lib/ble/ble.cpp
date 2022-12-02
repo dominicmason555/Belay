@@ -15,7 +15,8 @@ void enqueue(ble_ev ev, Queues& queues)
 }
 
 
-void MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
+void MyCallbacks::onWrite(BLECharacteristic *pCharacteristic)
+{
     std::string rxValue = pCharacteristic->getValue();
     ble_ev_t event_type = ble_ev_t::LED_COLOUR;
     uint32_t value = 0;
@@ -49,7 +50,9 @@ void Ble::init(Queues& queue)
 
     // Create the BLE Server
     pServer = BLEDevice::createServer();
-    pServer->setCallbacks(new MyServerCallbacks());
+    pServer->setCallbacks(
+        new MyServerCallbacks(devicesConnected, oldDevicesConnected)
+    );
 
     // Create the BLE Service
     BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -78,18 +81,22 @@ void Ble::init(Queues& queue)
 
 void Ble::tick(Queues& queues)
 {
-    // disconnecting
-    if (!deviceConnected && oldDeviceConnected) {
-        delay(500);                   // give the bluetooth stack the chance to get things ready
-        pServer->startAdvertising();  // restart advertising
-        Serial.println("start advertising");
-        oldDeviceConnected = deviceConnected;
+    if (devicesConnected != oldDevicesConnected)
+    {
+        Serial.print("Devices now connected: ");
+        Serial.println(devicesConnected);
+        if (devicesConnected < MAX_DEVICES)
+        {
+            delay(500); // Wait for bluetooth stack
+            pServer->startAdvertising(); // Restart advertising
+            Serial.println("start advertising");
+        }
+        oldDevicesConnected = devicesConnected;
+    }
+    if (devicesConnected < oldDevicesConnected) {
         enqueue({ble_ev_t::DISCONNECTED, 0}, queues);
     }
-    // connecting
-    if (deviceConnected && !oldDeviceConnected) {
-        // do stuff here on connecting
-        oldDeviceConnected = deviceConnected;
+    if (devicesConnected > oldDevicesConnected) {
         enqueue({ble_ev_t::CONNECTED, 0}, queues);
     }
 }

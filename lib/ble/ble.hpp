@@ -8,18 +8,31 @@
 
 #include "evqueue.hpp"
 
-class MyServerCallbacks : public BLEServerCallbacks {
-public:
-    bool deviceConnected = false;
-    bool oldDeviceConnected = false;
 
+const uint8_t MAX_DEVICES = 2;
+
+
+class MyServerCallbacks : public BLEServerCallbacks {
+private:
+    uint8_t& devicesConnected;
+    uint8_t& oldDevicesConnected;
+
+public:
     void onConnect(BLEServer *pServer) {
-        deviceConnected = true;
+        devicesConnected += 1;
     };
 
     void onDisconnect(BLEServer *pServer) {
-        deviceConnected = false;
+        devicesConnected -= 1;
     }
+
+    MyServerCallbacks(
+        uint8_t& devicesConnected,
+        uint8_t& oldDevicesConnected
+    ): 
+        devicesConnected(devicesConnected),
+        oldDevicesConnected(oldDevicesConnected)
+    {};
 };
 
 
@@ -35,10 +48,10 @@ class MyCallbacks : public BLECharacteristicCallbacks {
 class Ble
 {
 private:
-    BLEServer *pServer = NULL;
+    BLEServer *pServer;
     BLECharacteristic *pTxCharacteristic;
-    bool deviceConnected = false;
-    bool oldDeviceConnected = false;
+    uint8_t devicesConnected = 0;
+    uint8_t oldDevicesConnected = 0;
 
 public:
     void tick(Queues& queues);
