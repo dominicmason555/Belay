@@ -21,6 +21,8 @@ Output output(RELAY_PIN);
 
 void setup() {
     Serial.begin(115200);
+    Serial.setTxTimeoutMs(0);
+    Serial.setDebugOutput(false);
 
     ir.init();
     led.init();

@@ -15,9 +15,19 @@ void Led::tick(Queues& queues)
         switch (event.type)
         {
         case ble_ev_t::LED_COLOUR:
-        led_r = event.value >> 16;         // Top byte is R
-        led_g = (event.value >> 8) & 0xFF; // Next byte is G
-        led_b = event.value & 0xFF;        // Next byte is B
+            led_r = event.value >> 16;         // Top byte is R
+            led_g = (event.value >> 8) & 0xFF; // Next byte is G
+            led_b = event.value & 0xFF;        // Next byte is B
+            break;
+        case ble_ev_t::DISCONNECTED:
+            led_r = 5;
+            led_g = 0;
+            led_b = 0;
+            break;
+        case ble_ev_t::CONNECTED:
+            led_r = 5;
+            led_g = 0;
+            led_b = 5;
             break;
         default:
             break;

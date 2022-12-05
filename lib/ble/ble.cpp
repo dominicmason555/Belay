@@ -22,7 +22,8 @@ void MyCallbacks::onWrite(BLECharacteristic *pCharacteristic)
     uint32_t value = 0;
 
     if (rxValue.length() >= 3) {
-        Serial.print("Received Value: ");
+        if (Serial)
+            Serial.print("Received Value: ");
         for (int i = 0; i < rxValue.length(); i++)
         {
             Serial.print(rxValue[i]);
@@ -81,6 +82,12 @@ void Ble::init(Queues& queue)
 
 void Ble::tick(Queues& queues)
 {
+    if (devicesConnected < oldDevicesConnected) {
+        enqueue({ble_ev_t::DISCONNECTED, 0}, queues);
+    }
+    if (devicesConnected > oldDevicesConnected) {
+        enqueue({ble_ev_t::CONNECTED, 0}, queues);
+    }
     if (devicesConnected != oldDevicesConnected)
     {
         Serial.print("Devices now connected: ");
@@ -92,11 +99,5 @@ void Ble::tick(Queues& queues)
             Serial.println("start advertising");
         }
         oldDevicesConnected = devicesConnected;
-    }
-    if (devicesConnected < oldDevicesConnected) {
-        enqueue({ble_ev_t::DISCONNECTED, 0}, queues);
-    }
-    if (devicesConnected > oldDevicesConnected) {
-        enqueue({ble_ev_t::CONNECTED, 0}, queues);
     }
 }

@@ -25,6 +25,6 @@ public:
         pixels(1, 7, NEO_GRB + NEO_KHZ800),
         led_r(5),
         led_g(0),
-        led_b(5)
+        led_b(0)
     {};
 };
